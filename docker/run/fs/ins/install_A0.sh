@@ -23,4 +23,4 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install -r /git/ATULYA/requirements.txt
 
 # Preload A0
-python /git/atulya/preload.py --dockerized=true
+python /git/ATULYA/preload.py --dockerized=true
