@@ -1,0 +1,1 @@
+# Constructs system narratives.

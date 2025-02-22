@@ -1,0 +1,1 @@
+# Interfaces with hardware for physical actions.

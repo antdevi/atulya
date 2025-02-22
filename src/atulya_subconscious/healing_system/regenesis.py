@@ -1,0 +1,1 @@
+# Rebuilds damaged components.
