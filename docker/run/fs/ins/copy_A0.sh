@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Paths
-SOURCE_DIR="/git/atulya"
+SOURCE_DIR="/git/ATULYA"
 TARGET_DIR="/a0"
 
 # Copy repository files if run_ui.py is missing in /a0 (if the volume is mounted)

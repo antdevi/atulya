@@ -8,7 +8,7 @@ fi
 BRANCH="$1"
 
 # clone project repo branch
-git clone -b "$BRANCH" "https://github.com/eight-atulya/atulya" "/git/atulya"
+git clone -b "$BRANCH" "https://github.com/eight-atulya/ATULYA.git" "/git/ATULYA"
 
 # setup python environment
 . "/ins/setup_venv.sh" "$@"
@@ -20,7 +20,7 @@ pip install --upgrade pip ipython requests
 pip install torch --index-url https://download.pytorch.org/whl/cpu
 
 # Install remaining A0 python packages
-pip install -r /git/atulya/requirements.txt
+pip install -r /git/ATULYA/requirements.txt
 
 # Preload A0
 python /git/atulya/preload.py --dockerized=true
