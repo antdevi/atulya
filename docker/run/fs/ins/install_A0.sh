@@ -7,8 +7,10 @@ if [ -z "$1" ]; then
 fi
 BRANCH="$1"
 
-# clone project repo branch
+# Un comment to clone project repo branch
 git clone -b "$BRANCH" "https://github.com/eight-atulya/ATULYA.git" "/git/ATULYA"
+
+
 
 # setup python environment
 . "/ins/setup_venv.sh" "$@"
