@@ -32,5 +32,6 @@ The vision is to create systems that help people think clearly, work better, and
 Not just for one company.
 Not just for one country.
 For people everywhere — worldwide, and one day, interplanetary.
+Built to bring the beauty of algorithms and maths back to everyday workflows.
 
 Simple for users. Built for the future.
