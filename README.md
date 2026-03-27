@@ -1,6 +1,8 @@
 # Atulya
 ![Atulya banner](./atulya_banner.png)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/eight-atulya/atulya)
+
 **A living algorithm for machine intelligence (MI).**
 
 Atulya is built on one simple idea:  
