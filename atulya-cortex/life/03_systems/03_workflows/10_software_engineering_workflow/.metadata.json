@@ -1,0 +1,105 @@
+{
+  "id": "04fb0d4d-71af-4b12-bf1b-4afb8dd697a7",
+  "name": "10_software_engineering_workflow",
+  "path": "life\\03_systems\\03_workflows\\10_software_engineering_workflow",
+  "type": "folder",
+  "created_at": "2026-03-27T16:45:00+05:30",
+  "last_modified": "2026-03-27T16:45:00+05:30",
+  "version": "2.0",
+  "schema_version": "1.0",
+  "category": "work",
+  "life_stage": "all_stages",
+  "priority_level": 4,
+  "access_frequency": "weekly",
+  "maintenance_frequency": "weekly",
+  "parent": "ae6fcc4b-0e5b-4b25-a65f-ae237e9f5d36",
+  "ancestors": [
+    "ae6fcc4b-0e5b-4b25-a65f-ae237e9f5d36",
+    "020dac30-e5e4-4341-86a3-1eb7d88350fb",
+    "e7e47853-a8ea-469a-a94c-e383ffbfbaa7"
+  ],
+  "siblings": [],
+  "children": [],
+  "content_type": "mixed",
+  "file_types": [
+    ".md",
+    ".json"
+  ],
+  "estimated_size": 0,
+  "item_count": 0,
+  "usage_patterns": {
+    "read_frequency": "high",
+    "write_frequency": "medium",
+    "search_frequency": "high",
+    "last_accessed": null,
+    "access_count": 0
+  },
+  "automation_rules": {
+    "auto_categorize": true,
+    "auto_tag": true,
+    "auto_archive": false,
+    "auto_backup": true,
+    "auto_sync": true,
+    "auto_index": true,
+    "auto_cleanup": false,
+    "triggers": [],
+    "actions": [],
+    "conditions": []
+  },
+  "processing_pipeline": [
+    "index",
+    "categorize",
+    "tag"
+  ],
+  "ai_suggestions": [
+    "Link related engineering procedures",
+    "Surface git and release playbooks",
+    "Group workflows by operational risk"
+  ],
+  "security_level": "standard",
+  "privacy_level": "confidential",
+  "encryption_required": false,
+  "backup_frequency": "daily",
+  "lifecycle_stage": "active",
+  "retention_policy": "7_years",
+  "archive_after": "2_years",
+  "delete_after": "never",
+  "tags": [
+    "engineering",
+    "workflow",
+    "coding",
+    "git",
+    "operations"
+  ],
+  "labels": [],
+  "keywords": [
+    "software engineering",
+    "git",
+    "version control",
+    "debugging",
+    "release",
+    "coding workflow",
+    "operational protocol"
+  ],
+  "context": {
+    "time_context": "ongoing",
+    "location_context": "general",
+    "person_context": "general",
+    "project_context": "engineering_systems"
+  },
+  "integrations": [],
+  "external_systems": [],
+  "sync_requirements": "daily",
+  "performance_metrics": {
+    "load_time": 0,
+    "search_time": 0,
+    "index_size": 0,
+    "optimization_score": 0
+  },
+  "compliance_requirements": [],
+  "audit_trail": [],
+  "version_history": [],
+  "custom_fields": {},
+  "notes": "Home for reusable coding and git workflows learned through real operations.",
+  "status": "active"
+}
