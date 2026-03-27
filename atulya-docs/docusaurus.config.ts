@@ -334,7 +334,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Anurag Atulya and EIGHT.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Atulya.`,
     },
     prism: {
       theme: prismThemes.github,
