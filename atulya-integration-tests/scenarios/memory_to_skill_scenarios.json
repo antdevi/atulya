@@ -1,0 +1,447 @@
+{
+  "benchmark_name": "atulya_memory_to_skill_harness",
+  "expected_metrics": {
+    "memory_to_skill": {
+      "overall": {
+        "recall_accuracy": 1.0,
+        "contradiction_resolution_accuracy": 1.0,
+        "skill_creation_precision": 1.0,
+        "skill_reuse_success_rate": 1.0
+      },
+      "buckets": {
+        "temporal_correction": {
+          "recall_accuracy": 1.0
+        },
+        "contradiction_handling": {
+          "recall_accuracy": 1.0
+        },
+        "skill_emergence": {
+          "recall_accuracy": 1.0,
+          "skill_creation_precision": 1.0,
+          "skill_reuse_success_rate": 1.0
+        },
+        "portability": {
+          "recall_accuracy": 1.0,
+          "skill_creation_precision": 1.0,
+          "skill_reuse_success_rate": 1.0
+        }
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "id": "temporal-01",
+      "bucket": "temporal_correction",
+      "title": "Deploy region moves after repeated latency complaints",
+      "query": "Where should the analytics worker be deployed now?",
+      "facts": [
+        {"id": "t1-f1", "key": "deploy_region", "value": "us-east-1", "timestamp": "2026-01-05T09:00:00Z"},
+        {"id": "t1-f2", "key": "deploy_region", "value": "us-east-1", "timestamp": "2026-01-19T09:00:00Z"},
+        {"id": "t1-f3", "key": "deploy_region", "value": "eu-west-1", "timestamp": "2026-02-03T09:00:00Z", "supersedes": ["t1-f1", "t1-f2"]}
+      ],
+      "expected": {
+        "answer": "eu-west-1",
+        "contradiction_value": "eu-west-1"
+      }
+    },
+    {
+      "id": "temporal-02",
+      "bucket": "temporal_correction",
+      "title": "Weekly sync time changed after customer overlap",
+      "query": "When is the operations sync now?",
+      "facts": [
+        {"id": "t2-f1", "key": "ops_sync", "value": "Monday 10:00 UTC", "timestamp": "2026-01-07T09:00:00Z"},
+        {"id": "t2-f2", "key": "ops_sync", "value": "Monday 10:00 UTC", "timestamp": "2026-01-14T09:00:00Z"},
+        {"id": "t2-f3", "key": "ops_sync", "value": "Tuesday 14:00 UTC", "timestamp": "2026-02-11T09:00:00Z", "supersedes": ["t2-f1", "t2-f2"]}
+      ],
+      "expected": {
+        "answer": "Tuesday 14:00 UTC",
+        "contradiction_value": "Tuesday 14:00 UTC"
+      }
+    },
+    {
+      "id": "temporal-03",
+      "bucket": "temporal_correction",
+      "title": "Primary editor preference changed after migration",
+      "query": "Which editor should onboarding docs recommend now?",
+      "facts": [
+        {"id": "t3-f1", "key": "preferred_editor", "value": "vim", "timestamp": "2026-01-04T09:00:00Z"},
+        {"id": "t3-f2", "key": "preferred_editor", "value": "vim", "timestamp": "2026-01-18T09:00:00Z"},
+        {"id": "t3-f3", "key": "preferred_editor", "value": "vscode", "timestamp": "2026-02-08T09:00:00Z", "supersedes": ["t3-f1", "t3-f2"]}
+      ],
+      "expected": {
+        "answer": "vscode",
+        "contradiction_value": "vscode"
+      }
+    },
+    {
+      "id": "temporal-04",
+      "bucket": "temporal_correction",
+      "title": "Escalation contact rotated to a new owner",
+      "query": "Who should own incident escalations now?",
+      "facts": [
+        {"id": "t4-f1", "key": "incident_owner", "value": "alice", "timestamp": "2026-01-02T09:00:00Z"},
+        {"id": "t4-f2", "key": "incident_owner", "value": "alice", "timestamp": "2026-01-15T09:00:00Z"},
+        {"id": "t4-f3", "key": "incident_owner", "value": "priya", "timestamp": "2026-02-01T09:00:00Z", "supersedes": ["t4-f1", "t4-f2"]}
+      ],
+      "expected": {
+        "answer": "priya",
+        "contradiction_value": "priya"
+      }
+    },
+    {
+      "id": "temporal-05",
+      "bucket": "temporal_correction",
+      "title": "Support team timezone shifted for EMEA coverage",
+      "query": "What timezone should after-hours support use now?",
+      "facts": [
+        {"id": "t5-f1", "key": "support_timezone", "value": "America/Los_Angeles", "timestamp": "2026-01-09T09:00:00Z"},
+        {"id": "t5-f2", "key": "support_timezone", "value": "America/Los_Angeles", "timestamp": "2026-01-22T09:00:00Z"},
+        {"id": "t5-f3", "key": "support_timezone", "value": "Europe/Berlin", "timestamp": "2026-02-12T09:00:00Z", "supersedes": ["t5-f1", "t5-f2"]}
+      ],
+      "expected": {
+        "answer": "Europe/Berlin",
+        "contradiction_value": "Europe/Berlin"
+      }
+    },
+    {
+      "id": "temporal-06",
+      "bucket": "temporal_correction",
+      "title": "Artifact packaging format changed for release automation",
+      "query": "What package format should the release bot publish now?",
+      "facts": [
+        {"id": "t6-f1", "key": "release_format", "value": "zip", "timestamp": "2026-01-12T09:00:00Z"},
+        {"id": "t6-f2", "key": "release_format", "value": "zip", "timestamp": "2026-01-26T09:00:00Z"},
+        {"id": "t6-f3", "key": "release_format", "value": "tar.gz", "timestamp": "2026-02-09T09:00:00Z", "supersedes": ["t6-f1", "t6-f2"]}
+      ],
+      "expected": {
+        "answer": "tar.gz",
+        "contradiction_value": "tar.gz"
+      }
+    },
+    {
+      "id": "contradiction-01",
+      "bucket": "contradiction_handling",
+      "title": "Root cause shifts from cache theory to database lock",
+      "query": "What is the accepted root cause for the order lag incident?",
+      "facts": [
+        {"id": "c1-f1", "key": "order_lag_root_cause", "value": "cache saturation", "timestamp": "2026-01-08T09:00:00Z"},
+        {"id": "c1-f2", "key": "order_lag_root_cause", "value": "cache saturation", "timestamp": "2026-01-09T09:00:00Z"},
+        {"id": "c1-f3", "key": "order_lag_root_cause", "value": "database write lock", "timestamp": "2026-01-10T09:00:00Z", "supersedes": ["c1-f1", "c1-f2"]}
+      ],
+      "expected": {
+        "answer": "database write lock",
+        "contradiction_value": "database write lock"
+      }
+    },
+    {
+      "id": "contradiction-02",
+      "bucket": "contradiction_handling",
+      "title": "Ticket ownership moved after org change",
+      "query": "Who owns the SDK migration ticket?",
+      "facts": [
+        {"id": "c2-f1", "key": "sdk_migration_owner", "value": "dana", "timestamp": "2026-01-03T09:00:00Z"},
+        {"id": "c2-f2", "key": "sdk_migration_owner", "value": "dana", "timestamp": "2026-01-13T09:00:00Z"},
+        {"id": "c2-f3", "key": "sdk_migration_owner", "value": "mo", "timestamp": "2026-01-21T09:00:00Z", "supersedes": ["c2-f1", "c2-f2"]}
+      ],
+      "expected": {
+        "answer": "mo",
+        "contradiction_value": "mo"
+      }
+    },
+    {
+      "id": "contradiction-03",
+      "bucket": "contradiction_handling",
+      "title": "Refund policy exception overrides blanket no-refund rule",
+      "query": "How should duplicate charge requests be handled?",
+      "facts": [
+        {"id": "c3-f1", "key": "duplicate_charge_policy", "value": "deny refund", "timestamp": "2026-01-01T09:00:00Z"},
+        {"id": "c3-f2", "key": "duplicate_charge_policy", "value": "deny refund", "timestamp": "2026-01-11T09:00:00Z"},
+        {"id": "c3-f3", "key": "duplicate_charge_policy", "value": "refund after ledger confirmation", "timestamp": "2026-01-30T09:00:00Z", "supersedes": ["c3-f1", "c3-f2"]}
+      ],
+      "expected": {
+        "answer": "refund after ledger confirmation",
+        "contradiction_value": "refund after ledger confirmation"
+      }
+    },
+    {
+      "id": "contradiction-04",
+      "bucket": "contradiction_handling",
+      "title": "Identity provider changed during IT consolidation",
+      "query": "Which identity provider should new employees use?",
+      "facts": [
+        {"id": "c4-f1", "key": "identity_provider", "value": "okta", "timestamp": "2026-01-02T09:00:00Z"},
+        {"id": "c4-f2", "key": "identity_provider", "value": "okta", "timestamp": "2026-01-16T09:00:00Z"},
+        {"id": "c4-f3", "key": "identity_provider", "value": "google workspace", "timestamp": "2026-02-02T09:00:00Z", "supersedes": ["c4-f1", "c4-f2"]}
+      ],
+      "expected": {
+        "answer": "google workspace",
+        "contradiction_value": "google workspace"
+      }
+    },
+    {
+      "id": "contradiction-05",
+      "bucket": "contradiction_handling",
+      "title": "Incident severity was downgraded after evidence review",
+      "query": "What is the final severity for the webhook outage?",
+      "facts": [
+        {"id": "c5-f1", "key": "webhook_outage_severity", "value": "sev1", "timestamp": "2026-01-05T09:00:00Z"},
+        {"id": "c5-f2", "key": "webhook_outage_severity", "value": "sev1", "timestamp": "2026-01-05T10:00:00Z"},
+        {"id": "c5-f3", "key": "webhook_outage_severity", "value": "sev2", "timestamp": "2026-01-05T12:00:00Z", "supersedes": ["c5-f1", "c5-f2"]}
+      ],
+      "expected": {
+        "answer": "sev2",
+        "contradiction_value": "sev2"
+      }
+    },
+    {
+      "id": "contradiction-06",
+      "bucket": "contradiction_handling",
+      "title": "Release branch guidance was corrected",
+      "query": "Which branch should release commits target?",
+      "facts": [
+        {"id": "c6-f1", "key": "release_branch", "value": "release", "timestamp": "2026-01-06T09:00:00Z"},
+        {"id": "c6-f2", "key": "release_branch", "value": "release", "timestamp": "2026-01-19T09:00:00Z"},
+        {"id": "c6-f3", "key": "release_branch", "value": "main", "timestamp": "2026-02-04T09:00:00Z", "supersedes": ["c6-f1", "c6-f2"]}
+      ],
+      "expected": {
+        "answer": "main",
+        "contradiction_value": "main"
+      }
+    },
+    {
+      "id": "skill-01",
+      "bucket": "skill_emergence",
+      "title": "Duplicate charge tickets should become a reusable refund playbook",
+      "query": "A new duplicate charge ticket arrived in chat. What procedure should we use?",
+      "traces": [
+        {"id": "s1-t1", "task": "duplicate_charge_ticket", "signature": {"channel": "email", "issue": "duplicate_charge"}, "steps": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"], "outcome": "success", "timestamp": "2026-01-03T09:00:00Z"},
+        {"id": "s1-t2", "task": "duplicate_charge_ticket", "signature": {"channel": "phone", "issue": "duplicate_charge"}, "steps": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"], "outcome": "success", "timestamp": "2026-01-17T09:00:00Z"},
+        {"id": "s1-t3", "task": "duplicate_charge_ticket", "signature": {"channel": "web", "issue": "duplicate_charge"}, "steps": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"], "outcome": "success", "timestamp": "2026-01-31T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "duplicate_charge_ticket", "channel": "chat", "issue": "duplicate_charge"},
+      "failure_conditions": ["ledger mismatch", "charge older than 90 days"],
+      "expected": {
+        "answer": "open ledger -> confirm duplicate charge -> refund newest duplicate -> send resolution note",
+        "should_create_skill": true,
+        "skill_procedure": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"],
+        "reuse_answer": "open ledger -> confirm duplicate charge -> refund newest duplicate -> send resolution note"
+      }
+    },
+    {
+      "id": "skill-02",
+      "bucket": "skill_emergence",
+      "title": "Flaky snapshot tests should produce a repair procedure",
+      "query": "A new flaky snapshot failure appeared in CI. What procedure should we use?",
+      "traces": [
+        {"id": "s2-t1", "task": "snapshot_ci_failure", "signature": {"component": "billing-ui", "channel": "pr"}, "steps": ["reproduce snapshot locally", "inspect intentional UI diff", "update snapshots", "rerun focused test"], "outcome": "success", "timestamp": "2026-01-06T09:00:00Z"},
+        {"id": "s2-t2", "task": "snapshot_ci_failure", "signature": {"component": "dashboard-ui", "channel": "merge_queue"}, "steps": ["reproduce snapshot locally", "inspect intentional UI diff", "update snapshots", "rerun focused test"], "outcome": "success", "timestamp": "2026-01-20T09:00:00Z"},
+        {"id": "s2-t3", "task": "snapshot_ci_failure", "signature": {"component": "auth-ui", "channel": "nightly"}, "steps": ["reproduce snapshot locally", "inspect intentional UI diff", "update snapshots", "rerun focused test"], "outcome": "success", "timestamp": "2026-02-02T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "snapshot_ci_failure", "component": "docs-ui", "channel": "pr"},
+      "failure_conditions": ["visual diff is not intentional", "baseline assets missing"],
+      "expected": {
+        "answer": "reproduce snapshot locally -> inspect intentional UI diff -> update snapshots -> rerun focused test",
+        "should_create_skill": true,
+        "skill_procedure": ["reproduce snapshot locally", "inspect intentional UI diff", "update snapshots", "rerun focused test"],
+        "reuse_answer": "reproduce snapshot locally -> inspect intentional UI diff -> update snapshots -> rerun focused test"
+      }
+    },
+    {
+      "id": "skill-03",
+      "bucket": "skill_emergence",
+      "title": "Onboarding access requests should collapse into a reliable checklist",
+      "query": "A new engineer needs access. What procedure should we use?",
+      "traces": [
+        {"id": "s3-t1", "task": "onboarding_access", "signature": {"role": "backend", "office": "blr"}, "steps": ["create bank account", "grant repo access", "provision staging credentials", "confirm first login"], "outcome": "success", "timestamp": "2026-01-04T09:00:00Z"},
+        {"id": "s3-t2", "task": "onboarding_access", "signature": {"role": "frontend", "office": "nyc"}, "steps": ["create bank account", "grant repo access", "provision staging credentials", "confirm first login"], "outcome": "success", "timestamp": "2026-01-18T09:00:00Z"},
+        {"id": "s3-t3", "task": "onboarding_access", "signature": {"role": "design", "office": "remote"}, "steps": ["create bank account", "grant repo access", "provision staging credentials", "confirm first login"], "outcome": "success", "timestamp": "2026-02-01T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "onboarding_access", "role": "ml", "office": "remote"},
+      "failure_conditions": ["security training incomplete", "manager approval missing"],
+      "expected": {
+        "answer": "create bank account -> grant repo access -> provision staging credentials -> confirm first login",
+        "should_create_skill": true,
+        "skill_procedure": ["create bank account", "grant repo access", "provision staging credentials", "confirm first login"],
+        "reuse_answer": "create bank account -> grant repo access -> provision staging credentials -> confirm first login"
+      }
+    },
+    {
+      "id": "skill-04",
+      "bucket": "skill_emergence",
+      "title": "Postmortem drafting should become a repeatable operating procedure",
+      "query": "A new incident closed. What postmortem procedure should we use?",
+      "traces": [
+        {"id": "s4-t1", "task": "postmortem_draft", "signature": {"incident_type": "latency", "team": "api"}, "steps": ["capture timeline", "list impact and blast radius", "write root cause", "assign follow-ups"], "outcome": "success", "timestamp": "2026-01-07T09:00:00Z"},
+        {"id": "s4-t2", "task": "postmortem_draft", "signature": {"incident_type": "auth", "team": "platform"}, "steps": ["capture timeline", "list impact and blast radius", "write root cause", "assign follow-ups"], "outcome": "success", "timestamp": "2026-01-21T09:00:00Z"},
+        {"id": "s4-t3", "task": "postmortem_draft", "signature": {"incident_type": "storage", "team": "infra"}, "steps": ["capture timeline", "list impact and blast radius", "write root cause", "assign follow-ups"], "outcome": "success", "timestamp": "2026-02-03T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "postmortem_draft", "incident_type": "queueing", "team": "api"},
+      "failure_conditions": ["timeline incomplete", "owner not assigned"],
+      "expected": {
+        "answer": "capture timeline -> list impact and blast radius -> write root cause -> assign follow-ups",
+        "should_create_skill": true,
+        "skill_procedure": ["capture timeline", "list impact and blast radius", "write root cause", "assign follow-ups"],
+        "reuse_answer": "capture timeline -> list impact and blast radius -> write root cause -> assign follow-ups"
+      }
+    },
+    {
+      "id": "skill-05",
+      "bucket": "skill_emergence",
+      "title": "Research briefs should distill into a reusable synthesis loop",
+      "query": "A new literature question arrived. What synthesis procedure should we use?",
+      "traces": [
+        {"id": "s5-t1", "task": "research_brief", "signature": {"domain": "memory", "audience": "engineering"}, "steps": ["collect primary sources", "extract comparable claims", "rank by evidence strength", "write concise brief"], "outcome": "success", "timestamp": "2026-01-08T09:00:00Z"},
+        {"id": "s5-t2", "task": "research_brief", "signature": {"domain": "agents", "audience": "product"}, "steps": ["collect primary sources", "extract comparable claims", "rank by evidence strength", "write concise brief"], "outcome": "success", "timestamp": "2026-01-22T09:00:00Z"},
+        {"id": "s5-t3", "task": "research_brief", "signature": {"domain": "security", "audience": "engineering"}, "steps": ["collect primary sources", "extract comparable claims", "rank by evidence strength", "write concise brief"], "outcome": "success", "timestamp": "2026-02-05T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "research_brief", "domain": "benchmarking", "audience": "exec"},
+      "failure_conditions": ["source list lacks primary documents", "claims not ranked"],
+      "expected": {
+        "answer": "collect primary sources -> extract comparable claims -> rank by evidence strength -> write concise brief",
+        "should_create_skill": true,
+        "skill_procedure": ["collect primary sources", "extract comparable claims", "rank by evidence strength", "write concise brief"],
+        "reuse_answer": "collect primary sources -> extract comparable claims -> rank by evidence strength -> write concise brief"
+      }
+    },
+    {
+      "id": "skill-06",
+      "bucket": "skill_emergence",
+      "title": "Schema migration incidents should produce a safe rollout procedure",
+      "query": "A new schema migration needs to ship. What procedure should we use?",
+      "traces": [
+        {"id": "s6-t1", "task": "schema_migration_rollout", "signature": {"service": "orders", "db": "postgres"}, "steps": ["write migration", "run staging backfill", "deploy behind flag", "verify production metrics"], "outcome": "success", "timestamp": "2026-01-09T09:00:00Z"},
+        {"id": "s6-t2", "task": "schema_migration_rollout", "signature": {"service": "billing", "db": "postgres"}, "steps": ["write migration", "run staging backfill", "deploy behind flag", "verify production metrics"], "outcome": "success", "timestamp": "2026-01-23T09:00:00Z"},
+        {"id": "s6-t3", "task": "schema_migration_rollout", "signature": {"service": "search", "db": "postgres"}, "steps": ["write migration", "run staging backfill", "deploy behind flag", "verify production metrics"], "outcome": "success", "timestamp": "2026-02-06T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "schema_migration_rollout", "service": "analytics", "db": "postgres"},
+      "failure_conditions": ["backfill exceeds SLO", "flag rollback unavailable"],
+      "expected": {
+        "answer": "write migration -> run staging backfill -> deploy behind flag -> verify production metrics",
+        "should_create_skill": true,
+        "skill_procedure": ["write migration", "run staging backfill", "deploy behind flag", "verify production metrics"],
+        "reuse_answer": "write migration -> run staging backfill -> deploy behind flag -> verify production metrics"
+      }
+    },
+    {
+      "id": "portability-01",
+      "bucket": "portability",
+      "title": "Refund playbook should survive export and import into another bank",
+      "query": "A new imported-support bank received a duplicate charge ticket. What procedure should it use?",
+      "traces": [
+        {"id": "p1-t1", "task": "portable_refund_playbook", "signature": {"channel": "email", "issue": "duplicate_charge"}, "steps": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"], "outcome": "success", "timestamp": "2026-01-10T09:00:00Z"},
+        {"id": "p1-t2", "task": "portable_refund_playbook", "signature": {"channel": "phone", "issue": "duplicate_charge"}, "steps": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"], "outcome": "success", "timestamp": "2026-01-24T09:00:00Z"},
+        {"id": "p1-t3", "task": "portable_refund_playbook", "signature": {"channel": "web", "issue": "duplicate_charge"}, "steps": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"], "outcome": "success", "timestamp": "2026-02-07T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "portable_refund_playbook", "channel": "chat", "issue": "duplicate_charge"},
+      "failure_conditions": ["ledger mismatch", "duplicate not confirmed"],
+      "portable": true,
+      "expected": {
+        "answer": "open ledger -> confirm duplicate charge -> refund newest duplicate -> send resolution note",
+        "should_create_skill": true,
+        "skill_procedure": ["open ledger", "confirm duplicate charge", "refund newest duplicate", "send resolution note"],
+        "reuse_answer": "open ledger -> confirm duplicate charge -> refund newest duplicate -> send resolution note"
+      }
+    },
+    {
+      "id": "portability-02",
+      "bucket": "portability",
+      "title": "Renewal-risk playbook should transfer into a fresh customer-success bank",
+      "query": "A newly imported customer-success bank sees a renewal risk. What procedure should it use?",
+      "traces": [
+        {"id": "p2-t1", "task": "renewal_risk_playbook", "signature": {"segment": "enterprise", "trigger": "usage_drop"}, "steps": ["inspect usage decline", "review open escalations", "schedule rescue call", "send renewal plan"], "outcome": "success", "timestamp": "2026-01-11T09:00:00Z"},
+        {"id": "p2-t2", "task": "renewal_risk_playbook", "signature": {"segment": "midmarket", "trigger": "sponsor_change"}, "steps": ["inspect usage decline", "review open escalations", "schedule rescue call", "send renewal plan"], "outcome": "success", "timestamp": "2026-01-25T09:00:00Z"},
+        {"id": "p2-t3", "task": "renewal_risk_playbook", "signature": {"segment": "enterprise", "trigger": "ticket_spike"}, "steps": ["inspect usage decline", "review open escalations", "schedule rescue call", "send renewal plan"], "outcome": "success", "timestamp": "2026-02-08T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "renewal_risk_playbook", "segment": "startup", "trigger": "usage_drop"},
+      "failure_conditions": ["customer has already churned", "owner missing"],
+      "portable": true,
+      "expected": {
+        "answer": "inspect usage decline -> review open escalations -> schedule rescue call -> send renewal plan",
+        "should_create_skill": true,
+        "skill_procedure": ["inspect usage decline", "review open escalations", "schedule rescue call", "send renewal plan"],
+        "reuse_answer": "inspect usage decline -> review open escalations -> schedule rescue call -> send renewal plan"
+      }
+    },
+    {
+      "id": "portability-03",
+      "bucket": "portability",
+      "title": "Rollback drill should move between banks as a portable behavior object",
+      "query": "A new imported runtime bank needs a rollback. What procedure should it use?",
+      "traces": [
+        {"id": "p3-t1", "task": "rollback_drill", "signature": {"service": "payments", "cause": "latency"}, "steps": ["freeze deploys", "restore previous image", "run health checks", "announce rollback status"], "outcome": "success", "timestamp": "2026-01-12T09:00:00Z"},
+        {"id": "p3-t2", "task": "rollback_drill", "signature": {"service": "auth", "cause": "errors"}, "steps": ["freeze deploys", "restore previous image", "run health checks", "announce rollback status"], "outcome": "success", "timestamp": "2026-01-26T09:00:00Z"},
+        {"id": "p3-t3", "task": "rollback_drill", "signature": {"service": "search", "cause": "cpu_spike"}, "steps": ["freeze deploys", "restore previous image", "run health checks", "announce rollback status"], "outcome": "success", "timestamp": "2026-02-09T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "rollback_drill", "service": "analytics", "cause": "latency"},
+      "failure_conditions": ["previous image missing", "health checks fail"],
+      "portable": true,
+      "expected": {
+        "answer": "freeze deploys -> restore previous image -> run health checks -> announce rollback status",
+        "should_create_skill": true,
+        "skill_procedure": ["freeze deploys", "restore previous image", "run health checks", "announce rollback status"],
+        "reuse_answer": "freeze deploys -> restore previous image -> run health checks -> announce rollback status"
+      }
+    },
+    {
+      "id": "portability-04",
+      "bucket": "portability",
+      "title": "Literature screening loop should import into another research bank",
+      "query": "A newly imported research bank has to screen papers. What procedure should it use?",
+      "traces": [
+        {"id": "p4-t1", "task": "literature_screening", "signature": {"topic": "memory", "depth": "wide"}, "steps": ["collect candidate papers", "filter to primary evidence", "tag benchmark claims", "write shortlist"], "outcome": "success", "timestamp": "2026-01-13T09:00:00Z"},
+        {"id": "p4-t2", "task": "literature_screening", "signature": {"topic": "agents", "depth": "focused"}, "steps": ["collect candidate papers", "filter to primary evidence", "tag benchmark claims", "write shortlist"], "outcome": "success", "timestamp": "2026-01-27T09:00:00Z"},
+        {"id": "p4-t3", "task": "literature_screening", "signature": {"topic": "security", "depth": "wide"}, "steps": ["collect candidate papers", "filter to primary evidence", "tag benchmark claims", "write shortlist"], "outcome": "success", "timestamp": "2026-02-10T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "literature_screening", "topic": "benchmarks", "depth": "focused"},
+      "failure_conditions": ["source corpus missing primary papers", "claims untagged"],
+      "portable": true,
+      "expected": {
+        "answer": "collect candidate papers -> filter to primary evidence -> tag benchmark claims -> write shortlist",
+        "should_create_skill": true,
+        "skill_procedure": ["collect candidate papers", "filter to primary evidence", "tag benchmark claims", "write shortlist"],
+        "reuse_answer": "collect candidate papers -> filter to primary evidence -> tag benchmark claims -> write shortlist"
+      }
+    },
+    {
+      "id": "portability-05",
+      "bucket": "portability",
+      "title": "Hotfix triage should remain effective after .brain transfer",
+      "query": "A new imported engineering bank needs to triage a hotfix. What procedure should it use?",
+      "traces": [
+        {"id": "p5-t1", "task": "hotfix_triage", "signature": {"service": "api", "severity": "sev2"}, "steps": ["confirm blast radius", "prepare minimal patch", "get reviewer signoff", "ship and monitor"], "outcome": "success", "timestamp": "2026-01-14T09:00:00Z"},
+        {"id": "p5-t2", "task": "hotfix_triage", "signature": {"service": "worker", "severity": "sev1"}, "steps": ["confirm blast radius", "prepare minimal patch", "get reviewer signoff", "ship and monitor"], "outcome": "success", "timestamp": "2026-01-28T09:00:00Z"},
+        {"id": "p5-t3", "task": "hotfix_triage", "signature": {"service": "frontend", "severity": "sev2"}, "steps": ["confirm blast radius", "prepare minimal patch", "get reviewer signoff", "ship and monitor"], "outcome": "success", "timestamp": "2026-02-11T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "hotfix_triage", "service": "desktop", "severity": "sev2"},
+      "failure_conditions": ["blast radius unclear", "reviewer unavailable"],
+      "portable": true,
+      "expected": {
+        "answer": "confirm blast radius -> prepare minimal patch -> get reviewer signoff -> ship and monitor",
+        "should_create_skill": true,
+        "skill_procedure": ["confirm blast radius", "prepare minimal patch", "get reviewer signoff", "ship and monitor"],
+        "reuse_answer": "confirm blast radius -> prepare minimal patch -> get reviewer signoff -> ship and monitor"
+      }
+    },
+    {
+      "id": "portability-06",
+      "bucket": "portability",
+      "title": "Release note assembly should transfer to a new launch bank",
+      "query": "A fresh imported launch bank needs release notes. What procedure should it use?",
+      "traces": [
+        {"id": "p6-t1", "task": "release_note_assembly", "signature": {"release_type": "minor", "surface": "cli"}, "steps": ["collect merged PRs", "group by user impact", "add migration notes", "publish changelog draft"], "outcome": "success", "timestamp": "2026-01-15T09:00:00Z"},
+        {"id": "p6-t2", "task": "release_note_assembly", "signature": {"release_type": "patch", "surface": "api"}, "steps": ["collect merged PRs", "group by user impact", "add migration notes", "publish changelog draft"], "outcome": "success", "timestamp": "2026-01-29T09:00:00Z"},
+        {"id": "p6-t3", "task": "release_note_assembly", "signature": {"release_type": "minor", "surface": "docs"}, "steps": ["collect merged PRs", "group by user impact", "add migration notes", "publish changelog draft"], "outcome": "success", "timestamp": "2026-02-12T09:00:00Z"}
+      ],
+      "reuse_task": {"task": "release_note_assembly", "release_type": "major", "surface": "desktop"},
+      "failure_conditions": ["merged PR list incomplete", "migration note missing"],
+      "portable": true,
+      "expected": {
+        "answer": "collect merged PRs -> group by user impact -> add migration notes -> publish changelog draft",
+        "should_create_skill": true,
+        "skill_procedure": ["collect merged PRs", "group by user impact", "add migration notes", "publish changelog draft"],
+        "reuse_answer": "collect merged PRs -> group by user impact -> add migration notes -> publish changelog draft"
+      }
+    }
+  ]
+}

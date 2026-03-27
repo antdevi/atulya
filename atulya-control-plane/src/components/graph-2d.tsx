@@ -788,7 +788,13 @@ export function convertAtulyaGraphData(atulyaData: {
       similarity?: number;
     };
   }>;
-  table_rows?: Array<{ id: string; text: string; entities?: string; context?: string }>;
+  table_rows?: Array<{
+    id: string;
+    text: string;
+    entities?: string;
+    context?: string;
+    access_count?: number;
+  }>;
 }): GraphData {
   const nodes: GraphNode[] = (atulyaData.nodes || []).map((n) => {
     const tableRow = atulyaData.table_rows?.find((r) => r.id === n.data.id);

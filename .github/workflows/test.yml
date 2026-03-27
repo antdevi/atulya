@@ -191,6 +191,38 @@ jobs:
     - name: Build docs
       run: npm run build --workspace=atulya-docs
 
+  benchmark-memory-to-skill:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: ".python-version"
+
+    - name: Sync benchmark dependencies
+      working-directory: ./atulya-integration-tests
+      run: uv sync --frozen
+
+    - name: Run memory-to-skill benchmark
+      run: uv run --directory atulya-integration-tests atulya-benchmark
+
+    - name: Upload benchmark artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: atulya-memory-to-skill-benchmark
+        path: |
+          atulya-integration-tests/benchmark-results/leaderboard.json
+          atulya-integration-tests/benchmark-results/leaderboard.md
+
   test-rust-cli:
     runs-on: ubuntu-latest
     env:

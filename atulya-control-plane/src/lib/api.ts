@@ -77,6 +77,37 @@ export interface DreamStats {
   distilled_count: number;
 }
 
+export interface BenchmarkLeaderboardSummary {
+  scenario_count: number;
+  recall_accuracy: number;
+  contradiction_resolution_accuracy: number | null;
+  skill_creation_precision: number;
+  skill_reuse_success_rate: number | null;
+  time_to_useful_answer_ms: number | null;
+  token_cost_per_successful_action: number | null;
+}
+
+export interface BenchmarkResponse {
+  available: boolean;
+  mode: "deterministic" | "live-api";
+  leaderboard: {
+    benchmark_name: string;
+    mode: string;
+    scenario_count: number;
+    strategies: Record<
+      string,
+      {
+        overall: BenchmarkLeaderboardSummary;
+        buckets: Record<string, BenchmarkLeaderboardSummary>;
+      }
+    >;
+  } | null;
+  markdown: string;
+  generated_at: string | null;
+  stdout?: string;
+  stderr?: string;
+}
+
 export class ControlPlaneClient {
   private async fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
     try {
@@ -244,6 +275,19 @@ export class ControlPlaneClient {
    */
   async getBankStats(bankId: string) {
     return this.fetchApi(`/api/stats/${bankId}`);
+  }
+
+  async getBenchmark(mode: "deterministic" | "live-api" = "live-api") {
+    return this.fetchApi<BenchmarkResponse>(`/api/benchmark?mode=${mode}`, {
+      cache: "no-store" as RequestCache,
+    });
+  }
+
+  async runBenchmark(mode: "deterministic" | "live-api" = "live-api") {
+    return this.fetchApi<BenchmarkResponse>("/api/benchmark", {
+      method: "POST",
+      body: JSON.stringify({ mode }),
+    });
   }
 
   /**

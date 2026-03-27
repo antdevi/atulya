@@ -18,8 +18,11 @@ dependencies = [
     "cryptography>=46.0.5", # Subgroup attack vulnerability fix
 ]
 
+[project.scripts]
+atulya-benchmark = "atulya_benchmarks.run:main"
+
 [tool.hatch.build.targets.wheel]
-packages = ["tests"]
+packages = ["tests", "atulya_benchmarks"]
 
 [tool.pytest.ini_options]
 log_cli = true

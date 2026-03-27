@@ -56,6 +56,41 @@ uv run pytest tests/ -v
 
 This runs both types. Self-contained tests won't conflict with the external server.
 
+## Memory-to-Skill Benchmark
+
+This repo now includes a deterministic benchmark harness for the wedge Atulya wants to own:
+turning repeated experience into a reusable skill or decision rule.
+
+It covers 24 scenarios across:
+- temporal correction
+- contradiction handling
+- skill emergence
+- portability through `.brain` artifacts
+
+Run it locally with one command from the repo root:
+
+```bash
+uv run --directory atulya-integration-tests atulya-benchmark
+```
+
+Run the real API-backed experiment mode:
+
+```bash
+uv run --directory atulya-integration-tests atulya-benchmark --mode live-api
+```
+
+This boots a local Atulya API with `pg0`, drives real HTTP retain/recall calls,
+and exercises actual `.brain` export/import for the portability scenarios.
+
+Outputs are written to:
+- `atulya-integration-tests/benchmark-results/leaderboard.json`
+- `atulya-integration-tests/benchmark-results/leaderboard.md`
+- `atulya-integration-tests/benchmark-results/leaderboard.live.json`
+- `atulya-integration-tests/benchmark-results/leaderboard.live.md`
+
+The harness compares a naive `plain_recall` strategy against a `memory_to_skill`
+strategy and fails if the checked-in benchmark contract regresses.
+
 ## Environment Variables
 
 - `ATULYA_API_URL` - Base URL for external-server tests (default: `http://localhost:8888`)
