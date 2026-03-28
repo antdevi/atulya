@@ -5,6 +5,8 @@
 
 [Read the evolved BRAIN work](https://github.com/eight-atulya/atulya/blob/2c1fe0047c534cbd081cac308ba0fad8dafd77e4/atulya-brain/patent/BRAIN_Patent_Draft.md)
 
+[Read the Atulya product principles](./ATULYA_PRINCIPLES.md)
+
 **A living algorithm for machine intelligence (MI).**
 
 Atulya is built on one simple idea:  
@@ -12,6 +14,17 @@ Atulya is built on one simple idea:
 
 Most systems try to remove all mistakes. Atulya takes a different path.  
 It treats gaps, change, and feedback as useful signals for learning.
+
+## The Meaning Of Atulya
+
+Atulya should feel like a thinking partner, not a search box.
+
+- It should explain why it believes something, not just answer.
+- It should remember what matters and compress what repeats.
+- It should notice contradictions and drift before users do.
+- It should help teams move from confusion to action.
+
+If you only read one extra file in this repository, read [ATULYA_PRINCIPLES.md](./ATULYA_PRINCIPLES.md).
 
 ## See it in action
 
